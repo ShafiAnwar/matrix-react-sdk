@@ -51,11 +51,13 @@ export function pillifyLinks(nodes: ArrayLike<Element>, mxEvent: MatrixEvent, pi
         } else if (node.tagName === "A" && node.getAttribute("href")) {
             const href = node.getAttribute("href")!;
             const parts = parsePermalink(href);
-            // If the link is a (localised) matrix.to link, replace it with a pill
-            // We don't want to pill event permalinks, so those are ignored.
-            if (parts && !parts.eventId) {
-                const pillContainer = document.createElement("span");
 
+            const customLinkContent = ![href, parts.userId, parts.roomIdOrAlias].includes(node.textContent);
+
+            if (parts && !customLinkContent) {
+                // If the link is a (localised) matrix.to link, replace it with a pill
+
+                const pillContainer = document.createElement("span");
                 const pill = (
                     <Pill url={href} inMessage={true} room={room} shouldShowPillAvatar={shouldShowPillAvatar} />
                 );
